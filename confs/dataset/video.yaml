@@ -1,0 +1,89 @@
+metainfo:
+    gender: 'neutral'
+    data_dir: mvhuman/200173_training.h5
+    subject: "200173"
+    start_frame: 0
+    skip: 1
+    img_scale_factor: 1.0
+    bgcolor: 1.0 # 0 or 1
+    bbox_offset: 0.3
+
+testing:
+    type: 'novel_view' # novel_view  novel_pose  canonical
+
+train:
+    type: "Video"
+    batch_size: 1
+    drop_last: False
+    shuffle: True
+    worker: 8
+
+    sampling_strategy: 'mixed_sampling'
+    num_sample : 144 #576 # for weighted_sampling
+    sample_bbox_ratio : 0.7 # for weighted_sampling
+    patch_size: 24 # for patch_sampling
+    sample_subject_ratio: 0.9 # for patch_sampling
+    N_patch: 1 # for patch_sampling
+
+valid:
+    type: "VideoVal"
+    image_id: 0
+    batch_size: 1
+    drop_last: False
+    shuffle: False
+    worker: 8
+
+    use_refined_pose: True
+    num_sample : -1
+    pixel_per_batch: 1024
+
+test:
+    type: "VideoTest"
+    image_id: 0
+    batch_size: 1
+    drop_last: False
+    shuffle: False
+    worker: 8
+
+    use_refined_pose: True
+    num_sample : -1
+    pixel_per_batch: 1024
+
+novelpose:
+    type: "VideoNovelPose"
+    image_id: 0
+    batch_size: 1
+    drop_last: False
+    shuffle: False
+    worker: 8
+
+    use_refined_pose: False
+    num_sample : -1
+    pixel_per_batch: 1024
+
+novelview:
+    type: "VideoNovelView"
+    image_id: 0
+    batch_size: 1
+    drop_last: False
+    shuffle: False
+    worker: 8
+
+    use_refined_pose: False
+    num_sample : -1
+    pixel_per_batch: 1024
+
+canonical:
+    type: "Canonical"
+    image_id: 0
+    batch_size: 1
+    drop_last: False
+    shuffle: False
+    worker: 8
+
+    use_refined_pose: False
+    num_sample : -1
+    pixel_per_batch: 1024
+
+
+

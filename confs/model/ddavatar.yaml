@@ -1,0 +1,117 @@
+mode: '4gpu'
+
+is_continue: False
+n_sdf_samp: 128
+
+optimizer:
+    optimizer: adam
+    lr: 5.0e-4
+    lr_non_rigid_deformer: 5.0e-4
+    lr_sdf_net: 5.0e-4
+    lr_rgb_net: 5.0e-4
+    lr_density: 1.0e-4
+    lr_body_model_params: 5.0e-5
+    lrate_decay: 500
+    max_step: 300000
+
+trainer_module: 'lib.model.v2a_model'
+network_module: 'lib.model.v2a'
+
+non_rigid_deformer:
+    module: 'lib.model.module.deformer_local'
+    d_pose_feature: 64
+    d_deformed_feature: 0
+    kick_in_iter: 5000
+    valid_in_iter: 5000
+    posi_pose:
+        mode: 'fourier'
+        d_in: 6
+        multires: 2
+        min_freq: 0.0
+        include_input: True
+    posi_pts:
+        mode: 'fourier'
+        d_in: 3 # pts
+        multires: 5
+        min_freq: 0.0
+        include_input: True
+
+    graph_net:
+        d_in: 6
+        d_out: 64
+        W: 64
+        D: 4
+        fc_D: 2
+        opt_scale: True
+        keep_extra_joint: True
+        mask_root: True
+        legacy: False
+        base_scale: 0.5
+
+    deformer_mlp:
+        d_in: ${..d_pose_feature}
+        d_out: 3 # delta x
+        d_deformed_feature: ${..d_deformed_feature}
+        d_hid: 256
+        n_layers: 4
+        skip_in: [ -1 ]
+        weight_norm: True
+
+sdf_net:
+    module: 'lib.model.module.sdf_net'
+    d_sdf_feature: 256
+    d_in: 3 # pts
+    d_out: 1 # delta sdf
+    d_hid: 256
+    n_layers: 8
+    init: 'geometry'
+    bias: 0.6
+    skip_in: [4]
+    weight_norm: True
+    cond: 'none' # smpl
+    posi_pts:
+        mode: 'fourier'
+        d_in: 3 # pts
+        multires: 5
+        min_freq: 0.0
+        include_input: True
+
+
+rgb_net:
+    module: 'lib.model.module.rgb_net'
+    d_sdf_feature: ${..sdf_net.d_sdf_feature}
+    d_deformed_feature: ${..non_rigid_deformer.d_deformed_feature}
+    mode: 'none' # pose
+    d_in: 6 # 3+3 pnt+normal
+    d_out: 3
+    d_hid: 256
+    n_layers: 4
+    weight_norm: True
+    multires_view: -1
+
+density:
+    params_init: {beta: 0.1}
+    beta_min: 0.0001
+
+ray_sampler:
+    scene_bounding_sphere: 3.0
+    near: 0.0
+    N_samples: 128
+
+loss:
+    module: 'lib.model.module.loss'
+    base_weight: 0.3
+    eikonal_weight : 0.1
+    mask_weight: 0.1
+    lpips_weight: 1.0
+    kick_in_iter: ${..non_rigid_deformer.kick_in_iter}
+    kick_out_iter: 60000
+    rgb_weight: 1.0
+    s3im_weight: 0.1
+    s3im_kernel: 4
+    s3im_stride: 4
+    s3im_repeat: 10
+    s3im_patch: 12
+    volscale_weight: 0.001
+    delta_x_weight: 20.0
+

@@ -1,0 +1,12 @@
+hydra:
+    run:
+        dir: "../outputs/${project_name}/${run}"
+
+defaults:
+  - model: ddavatar
+  - dataset: video
+  - _self_
+
+seed: 42
+project_name: 'mvhuman'
+run: ${dataset.metainfo.subject}
