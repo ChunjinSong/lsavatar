@@ -212,8 +212,8 @@ class V2AModel(pl.LightningModule):
             # smpl_trans = body_model_params['transl']
             inputs["smpl_pose"] = torch.cat((inputs["smpl_pose"][..., :3], body_model_params['body_pose']), dim=1)
 
-        self.get_save_imgs(inputs, targets, base_name=f'{int(idx):04d}',
-                           path=f'{self.opt.dataset.testing.type}/test_rendering')
+        self.get_save_imgs(inputs, targets, base_name=f'{int(idx):04d}', path=f'{self.opt.dataset.testing.type}/test_rendering')
+        self.get_save_meshes(inputs, base_name=f'{int(idx):04d}', path='test_geometry')
 
     def test_canonical(self, batch):
         inputs, targets = batch

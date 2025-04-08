@@ -10,7 +10,7 @@ Official Repository for ICLR 2025 paper [*Locality Sensitive Avatars From Video*
 * Install dependenices. `cd lsavatar`, `pip install -r requirement.txt` and `python setup.py develop`
 * Download [SMPL model](https://smpl.is.tue.mpg.de/download.php) (1.0.0 for Python 2.7 (10 shape PCs)) and move them to the corresponding places:
 ```
-mkdir code/lib/smpl/smpl_model/
+mkdir lib/smpl/smpl_model/
 mv /path/to/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl lib/smpl/smpl_model/SMPL_FEMALE.pkl
 mv /path/to/smpl/models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl lib/smpl/smpl_model/SMPL_MALE.pkl
 mv /path/to/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.0.0.pkl lib/smpl/smpl_model/SMPL_NEUTRAL.pkl
@@ -22,6 +22,7 @@ mv /path/to/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.0.0.pkl lib/smpl/smpl
 
 ## Training and Testing
 We support to train and test the model on 2 GPUs or 4 GPUs, the corresponding setting are under `./script/subscript`.
+Before running the code, please set `gender`, `data_dir`, `subject`, `img_scale_factor`, `bgcolor`, `test_type` in `./script/launch.sh` first, 
 ```
 bash ./script/launch.sh
 ```

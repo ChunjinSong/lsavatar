@@ -1,17 +1,12 @@
-#!/bin/bash
-
-conda activate lsavatar
-cd path/to/lsavatar
-
 project_name='lsavatar'
 
-subject='200173'
+subject='102107'   # subject
 gender='neutral'
-bgcolor=1.0
-img_scale_factor=1.0
-test_type='novel_view'
+bgcolor=1.0 # 0--black 1--white
+img_scale_factor=1.0 # scaling the input image
+test_type='novel_view' # 'novel_view' or 'novel_pose'
 
-data_dir=mvhuman/${subject}_training.h5
+data_dir=mvhuman/${subject}_training.h5  # data path
 
 bash ./script/subscript/train_4gpu.sh --project_name ${project_name} \
                          --subject ${subject} \

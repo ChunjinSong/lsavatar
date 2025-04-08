@@ -1,6 +1,5 @@
 import torch
 import numpy as np
-import plotly.graph_objects as go
 from copy import deepcopy
 from collections import namedtuple
 from scipy.spatial.transform import Rotation
@@ -796,51 +795,6 @@ def create_plane(x=None, y=None, z=None, length_x=10., length_y=5,
 
 def dist_to_joints(kp3d, pts):
     return np.linalg.norm(pts[:, None, :] - kp3d[None], axis=-1)
-
-
-def plot_bounding_cylinder(kp, cylinder_params=None, fig=None, g_axes=[0, -1], **kwargs):
-    '''
-    g_axes: ground-plane axes, by default is x-z
-    '''
-    if cylinder_params is None:
-        cylinder_params = get_kp_bounding_cylinder(kp, **kwargs)
-
-    root_loc, radius = cylinder_params[:2], cylinder_params[2]
-    top, bot = cylinder_params[3], cylinder_params[4]
-
-    # create circle
-    rads = np.linspace(0., 2 * np.pi, 50)
-    x = root_loc[0] + np.cos(rads) * radius
-    z = root_loc[1] + np.sin(rads) * radius
-
-    y_top = top * np.ones_like(x)
-    y_bot = bot * np.ones_like(x)
-
-    # cap_x = x.tolist() + [None] + x.tolist()
-    # cap_y = y_top.tolist() + [None] + y_bot.tolist()
-    # cap_z = z.tolist() + [None] + z.tolist()
-
-    top_x = x.tolist() + [None]
-    top_y = y_top.tolist() + [None]
-    top_z = z.tolist() + [None]
-
-    bot_x = x.tolist() + [None]
-    bot_y = y_bot.tolist() + [None]
-    bot_z = z.tolist() + [None]
-
-    top_cap = go.Scatter3d(x=top_x, y=top_y, z=top_z, mode="lines",
-                           line=dict(color="red", width=2))
-    bot_cap = go.Scatter3d(x=bot_x, y=bot_y, z=bot_z, mode="lines",
-                           line=dict(color="blue", width=2))
-    data = [top_cap, bot_cap]
-    if fig is None:
-        fig = go.Figure(data=data)
-    else:
-        for d in data:
-            fig.add_trace(d)
-
-    return fig
-
 
 def get_head_tail_bone_align_transforms(rest_pose, rest_heads, skel_type):
     assert skel_type in [HARESkeleton, WOLFSkeleton, MixamoSkeleton]
